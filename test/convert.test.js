@@ -30,7 +30,7 @@ Building a better future, one line of code at a time.
 
 
 // · 
-var assert = require('assert');
+const { expect } = require("chai")
 
 
 // · 
@@ -43,11 +43,11 @@ describe("convertJs", function() {
     describe("bytes to human", function() {
 
         it("converts 1024 bytes to Kilobyte with binary base", function() {
-            assert.equal(odinJS.convert.bytesToH(1024), "1.0 KiB");
+            expect(odinJS.convert.bytesToH(1024)).to.equal("1.0 KiB")
         })
     
         it("converts 1024 bytes to Kilobyte with decimal base", function() {
-            assert.equal(odinJS.convert.bytesToH(1024, true), "1.0 kB");
+            expect(odinJS.convert.bytesToH(1024, true)).to.equal("1.0 kB")
         })
     
     })    

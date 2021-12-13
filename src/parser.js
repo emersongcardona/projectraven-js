@@ -31,10 +31,10 @@ Building a better future, one line of code at a time.
 
 
 // · 
-class parserJs {
+class ParserJs {
 
     // · 
-    describeTopic(topic) {
+    describeTopic(topic = "") {
 
         // return data extracted form the MQTT topic string
         // example: 
@@ -55,4 +55,4 @@ class parserJs {
 
 
 // · 
-module.exports = new parserJs
+module.exports = new ParserJs
