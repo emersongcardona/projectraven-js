@@ -34,12 +34,15 @@ Building a better future, one line of code at a time.
 class ParserJs {
 
     // · 
-    describeTopic(topic = "") {
+    describeTopic(topic) {
 
         // return data extracted form the MQTT topic string
         // example: 
         //      device/topic/unit
         //      raven-1001/data/T1
+
+        if(!topic) { throw new Error(`Topic is required, value given -> ${topic}`) }
+        if(topic.split("/").length !== 3) { throw new Error(`Topic must have the following structure 'device/topic/unit', value given -> '${topic}''`) }
 
         topic = topic.split('/')
 
