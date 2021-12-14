@@ -36,19 +36,24 @@ class ParserJs {
     // · 
     describeTopic(topic) {
 
+        let notValidResponse = { valid: false }
+
         // return data extracted form the MQTT topic string
         // example: 
-        //      device/topic/unit
+        //      :deviceid/:schema/:unitid
         //      raven-1001/data/T1
-
-        if(!topic) { throw new Error(`Topic is required, value given -> ${topic}`) }
-        if(topic.split("/").length !== 3) { throw new Error(`Topic must have the following structure 'device/topic/unit', value given -> '${topic}''`) }
-
         topic = topic.split('/')
 
+        // the topic must contain at least two parameters to be valid
+        if (topic.length < 2) { return notValidResponse; }
+
+        // deviceid and schema are mandatory
+        if (topic[0] == '' || topic[1] == '') { return notValidResponse; }
+
         return { 
+            valid: true,
             device: topic[0],
-            topic: topic[1],
+            schema: topic[1],
             unitid: topic[2]
         }
 
