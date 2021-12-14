@@ -60,10 +60,12 @@ describe("parserJs", function() {
 
     describe("topic structure error", function(){
         
-        it("is expected to return with all values undefined when no topic is given", function(){
-            let noTopic = odinJs.parser.describeTopic()
-            expect(noTopic).to.be.an("Object")
-            expect(noTopic).to.have.keys(["device", "topic", "unitid"]);
+        it("is expected to throw an error when no topic is given", function(){
+            expect(odinJs.parser.describeTopic).to.throw()
+        })
+
+        it("is expected to throw an error when an invalid topic is given", function(){
+            expect(() => odinJs.parser.describeTopic("hello")).to.throw()
         })
 
     })
