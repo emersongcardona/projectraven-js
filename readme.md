@@ -8,13 +8,13 @@
 
 <hr/>
 
-Version 0.1.0  
+Version 0.2.0  
 
 
 #### Installation
 --------
 ```console
-npm install odin-js --save
+npm install projectraven-js --save
 ```
 
 
@@ -23,7 +23,7 @@ npm install odin-js --save
 ```js
 
 // instance the Odin JS tools
-var odinjs = require("odin-js")
+var odinjs = require("projectraven-js")
 
 // return data extracted form the MQTT topic string
 odinJs.parser.describeTopic("raven-1001/data/T1")
