@@ -31,10 +31,10 @@ Building a better future, one line of code at a time.
 
 
 // · 
-class convertJs {
+class ConvertJs {
 
     // · 
-    bytesToH(bytes, si) {
+    bytesToH(bytes, si = false) {
 
         var thresh = si ? 1000 : 1024;
 
@@ -60,4 +60,4 @@ class convertJs {
 }
 
 // · 
-module.exports = new convertJs
+module.exports = new ConvertJs

@@ -30,7 +30,7 @@ Building a better future, one line of code at a time.
 
 
 // · 
-var assert = require('assert');
+const { expect } = require("chai")
 
 
 // · 
@@ -43,16 +43,29 @@ describe("parserJs", function() {
 
     describe("get info from topic", function() {
 
-        it("return data extracted form the MQTT topic string", function() {
+        before(function() {
+            this.result = odinJs.parser.describeTopic("raven-1001/data/T1")
+        })
 
-            let result = odinJs.parser.describeTopic("raven-1001/data/T1")
-            assert.equal(typeof(result), 'object')
-            assert.deepEqual(result, { 
+        it("return data extracted form the MQTT topic string", function() {
+            expect(this.result).to.be.an("Object")
+            expect(this.result).to.deep.eql({ 
                 device: 'raven-1001',
                 topic: 'data',
                 unitid: 'T1'
-            }) 
+            });
+        })
 
+    })
+
+    describe("topic structure error", function(){
+        
+        it("is expected to throw an error when no topic is given", function(){
+            expect(odinJs.parser.describeTopic).to.throw()
+        })
+
+        it("is expected to throw an error when an invalid topic is given", function(){
+            expect(() => odinJs.parser.describeTopic("hello")).to.throw()
         })
 
     })

@@ -31,7 +31,7 @@ Building a better future, one line of code at a time.
 
 
 // · 
-class parserJs {
+class ParserJs {
 
     // · 
     describeTopic(topic) {
@@ -40,6 +40,9 @@ class parserJs {
         // example: 
         //      device/topic/unit
         //      raven-1001/data/T1
+
+        if(!topic) { throw new Error(`Topic is required, value given -> ${topic}`) }
+        if(topic.split("/").length !== 3) { throw new Error(`Topic must have the following structure 'device/topic/unit', value given -> '${topic}''`) }
 
         topic = topic.split('/')
 
@@ -55,4 +58,4 @@ class parserJs {
 
 
 // · 
-module.exports = new parserJs
+module.exports = new ParserJs
