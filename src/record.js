@@ -31,12 +31,20 @@ Building a better future, one line of code at a time.
 
 
 // · 
-class ParserJs {
+class RavenRecord {
+
 
     // · 
-    describeTopic(topic) {
+    constructor(topic, message) {
+        this.valid = true
+        this.topic = this._topic(topic);
+        this.payload = this._payload(message);
+        this.error = ""
+    }
 
-        let notValidResponse = { valid: false }
+
+    // · 
+    _topic(topic) {
 
         // return data extracted form the MQTT topic string
         // example: 
@@ -45,16 +53,45 @@ class ParserJs {
         topic = topic.split('/')
 
         // the topic must contain at least two parameters to be valid
-        if (topic.length < 2) { return notValidResponse; }
+        if (topic.length < 2) { return this.valid = false; }
 
         // deviceid and schema are mandatory
-        if (topic[0] == '' || topic[1] == '') { return notValidResponse; }
+        if (topic[0] == '' || topic[1] == '') { return this.valid = false; }
 
         return { 
-            valid: true,
             device: topic[0],
             schema: topic[1],
             unitid: topic[2]
+        }
+
+    }
+
+
+    // · 
+    _payload(message) {
+
+        if (this.topic.schema === 'data') { 
+            return this._payloadData(message) 
+        }
+
+        this.valid = false
+        this.error = "not_valid_payload"
+
+    }
+
+
+    // · 
+    _payloadData(message) {
+
+        let value = Number(message)
+
+        if (value === NaN) {
+            value = message.toString()
+        }
+
+        return {
+            v: value,
+            d: new Date()
         }
 
     }
@@ -63,4 +100,4 @@ class ParserJs {
 
 
 // · 
-module.exports = new ParserJs
+module.exports = RavenRecord

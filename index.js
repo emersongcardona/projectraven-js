@@ -31,4 +31,4 @@ Building a better future, one line of code at a time.
 
 
 exports.convert = require("./src/convert")
-exports.parser = require("./src/parser")
+exports.record = require("./src/record")
