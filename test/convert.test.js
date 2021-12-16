@@ -1,3 +1,4 @@
+"use strict"
 /*
 Lesli
 
@@ -38,7 +39,7 @@ let odinJS = require("../index")
 
 
 // · 
-describe("convertJs", function() {
+describe("ConvertJs", function() {
 
     describe("bytes to human", function() {
 
