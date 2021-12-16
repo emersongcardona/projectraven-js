@@ -48,7 +48,7 @@ _**ECMAScript 6**_
 ### **Usage**
 --------
 ProjectRavenJS is used as utilities for Node.js applications.    
-Either for Fronted apps and Backend apps. So, you can use them in the way you need it.
+Either for Frontend apps and Backend apps. So, you can use them in the way you need it.
 
 
 #### **ConvertJS**
@@ -56,7 +56,7 @@ ConvertJS class provides a method called _bytesToH_ that converts bytes and retu
 
 
 #### bytesToH(bytes: number, si?: boolean)
-_bytesToH_ must receive at least one parameter, that should be the _bytes_ you want to convert. And another that is optional, _si_, and is boolean.    
+_bytesToH_ must receive at least one parameter, that should be the _bytes_ you want to convert. And has another optional parameter named _si_, that is boolean and used to decide the way you want the result.
 
 See the following example:     
 
@@ -74,7 +74,7 @@ See the following example:
 
 #### **RavenRecord**
 RavenRecord class provides features to extract data from strings given. This class uses OOP in an implicit way, so, you have to know the basics. 
-These features are useful when you need data extracted form the MQTT topic string.    
+These features are useful when you need to extract data from the MQTT topic string for example.
 
 #### new RavenRecord(topic: string, message: number)
 
