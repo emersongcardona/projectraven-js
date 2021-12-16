@@ -11,27 +11,95 @@
 Version 0.3.0  
 
 
-#### Installation
+## Table of Contents
+- Installation
+- Get Started
+- Usage
+	- ConvertJS
+	- RavenRecord
+		- _topic
+		- _payload
+		- _payloadData
+
+### **Installation**
+ProjectRavenJS is available in the Node Package Manager, so you can install it via **npm**.   
+
 --------
 ```console
 npm install projectraven-js --save
 ```
 
+### **Get Started**
+First of all, you have to require the library in your NodeJS project.
+There are many ways to do that, it depends in the ECMAScript version your are using.
 
-#### Usage
---------
+_**ECMAScript 5**_   
 ```js
+	// instance the ProjectRavenJS utilities
+	const ProjectRavenJS = require("projectraven-js")
+```   
 
-// instance the Odin JS tools
-var odinjs = require("projectraven-js")
-
-// return data extracted form the MQTT topic string
-odinJs.parser.describeTopic("raven-1001/data/T1")
-
-// converts 1024 bytes to Kilobyte with binary base
-odinJS.convert.bytesToH(1024)
-
+_**ECMAScript 6**_    
+```js
+	// instance the ProjectRavenJS utilities
+	import ProjectRavenJS from "projectraven-js"
 ```
+
+### **Usage**
+--------
+ProjectRavenJS is used as utilities for Node.js applications.    
+Either for Fronted apps and Backend apps. So, you can use them in the way you need it.
+
+
+#### **ConvertJS**
+ConvertJS class provides a method called _bytesToH_ that converts bytes and returns a value that is better to understand for human.    
+
+
+#### bytesToH(bytes: number, si?: boolean)
+_bytesToH_ must receive at least one parameter, that should be the _bytes_ you want to convert. And another that is optional, _si_, and is boolean.    
+
+See the following example:     
+
+
+```js
+	const ProjectRavenJS = require("projectraven-js")
+
+	// converts 1024 bytes to Kilobyte with binary base
+	const bytesA = ProjectRavenJS.convert.bytesToH(1024)
+	const bytesB = ProjectRavenJS.convert.bytesToH(1024, true)
+
+	console.log(bytesA) // output: 1.0 KiB
+	console.log(bytesB) // output: 1.0 kB
+```
+
+#### **RavenRecord**
+RavenRecord class provides features to extract data from strings given. This class uses OOP in an implicit way, so, you have to know the basics. 
+These features are useful when you need data extracted form the MQTT topic string.    
+
+#### new RavenRecord(topic: string, message: number)
+
+See the following example:
+
+```js
+	const { record: RavenRecord } = require("projectraven-js")
+
+	const topic = new RavenRecord("raven-1001/data/T1", 1)
+
+	// output should look like this
+	console.log(topic) /*
+		RavenRecord {
+			valid: true,
+			topic: { device: 'raven-1001', schema: 'data', unitid: 'T1' },
+			payload: { v: 1, d: 2021-12-16T16:57:17.512Z },
+			error: ''
+		}
+	*/
+```
+
+As you can see, the instance of RavenRecord has to receive two parameters. The first one has to be a string, that should have the correct structure of a topic. And the second one, a number you want to show as message.    
+
+
+
 
 
 ### License  
