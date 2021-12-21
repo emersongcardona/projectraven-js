@@ -38,16 +38,16 @@ class RavenRecord {
     // · 
     constructor(topic, message) {
         this.valid = true
+        this.error = ""
         this.topic = this._topic(topic);
         this.payload = this._payload(message);
-        this.error = ""
     }
 
 
     // · 
     _topic(topic) {
 
-        // return data extracted form the MQTT topic string
+        // return data extracted from the MQTT topic string
         // example: 
         //      :deviceid/:schema/:unitid
         //      raven-1001/data/T1
@@ -75,13 +75,17 @@ class RavenRecord {
             return this._payloadData(message) 
         }
 
+        if (this.topic.schema === 'warning') {
+            return this._payloadWarning(message)
+        }
+
         this.valid = false
         this.error = "not_valid_payload"
 
     }
 
 
-    // · 
+    // · parse payload as measurable data
     _payloadData(message) {
 
         let value = Number(message)
@@ -91,9 +95,19 @@ class RavenRecord {
         }
 
         return {
-            v: value,
-            d: new Date()
+            v: value,               // value
+            d: new Date()           // timestamp
         }
+
+    }
+
+
+    // · parse data for a log of warning events
+    _payloadWarning(message) {
+
+        // for this escenario we received the alert code within the payload 
+        this.topic.unitid = message.toString()
+        return new Date()
 
     }
 
