@@ -8,7 +8,7 @@
 
 <hr/>
 
-Version 0.3.0    :octocat:  
+Version 0.4.0    :octocat:  
 
 
 
