@@ -39,30 +39,39 @@ class RavenRecord {
     constructor(topic, message) {
         this.valid = true
         this.error = ""
-        this.topic = this._topic(topic);
-        this.payload = this._payload(message);
+        this.topic = ""
+        this.meshid = ""
+        this.device = ""
+        this.payload = ""
+        this._topic(topic);
+        this._payload(message);
     }
 
 
     // · 
     _topic(topic) {
 
-        // return data extracted from the MQTT topic string
-        // example: 
-        //      :deviceid/:schema/:unitid
-        //      raven-1001/data/T1
-        topic = topic.split('/')
+        try {
+            
+            // return data extracted from the MQTT topic string
+            // example: 
+            //      :meshid/:schema
+            //      raven-1001/data
+            topic = topic.split('/')
 
-        // the topic must contain at least two parameters to be valid
-        if (topic.length < 2) { return this.valid = false; }
+            // the topic must contain at least two parameters to be valid
+            if (topic.length < 2) { return this.valid = false; }
 
-        // deviceid and schema are mandatory
-        if (topic[0] == '' || topic[1] == '') { return this.valid = false; }
+            // deviceid and schema are mandatory
+            if (topic[0] == '' || topic[1] == '') { return this.valid = false; }
 
-        return { 
-            device: topic[0],
-            schema: topic[1],
-            unitid: topic[2]
+            this.meshid = topic[0]
+            this.topic = topic[1]
+
+        } catch (error) {
+
+            this.valid = false;
+
         }
 
     }
@@ -71,9 +80,31 @@ class RavenRecord {
     // · 
     _payload(message) {
 
-        if (this.topic.schema === 'data') { 
-            return this._payloadData(message) 
+        try {
+
+            message = JSON.parse(message.toString())
+            
+            // Get the device id
+            this.device = message.id
+
+            // if payload does not include deviceid
+            // we attach the data to the main device
+            if (!this.device) {
+                this.device = this.meshid
+            }
+
+            delete(message.id)
+
+            //
+            if (this.topic === 'data') { 
+                this.payload = this._payloadData(message) 
+            }
+
+        } catch (error) {
+            return this.valid = false;   
         }
+
+        return 
 
         if (this.topic.schema === 'warning') {
             return this._payloadWarning(message)
@@ -88,16 +119,25 @@ class RavenRecord {
     // · parse payload as measurable data
     _payloadData(message) {
 
-        let value = Number(message)
+        var units = []
 
-        if (value === NaN) {
-            value = message.toString()
+        for (let [u,v] of Object.entries(message)) {
+
+            let value = Number(v)
+
+            if (value === NaN) {
+                value = v
+            }
+
+            units.push({
+                u:u,                    // unitid
+                v:value,                // final value
+                d:new Date().valueOf()  // timestamp
+            })
+
         }
 
-        return {
-            v: value,               // value
-            d: new Date()           // timestamp
-        }
+        return units;
 
     }
 
@@ -112,6 +152,7 @@ class RavenRecord {
     }
 
 }
+
 
 
 // · 
