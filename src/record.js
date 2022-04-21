@@ -91,6 +91,7 @@ class RavenRecord {
             // we attach the data to the main device
             if (!this.device) {
                 this.device = this.meshid
+                return this.valid = false;   
             }
 
             delete(message.id)
@@ -132,7 +133,7 @@ class RavenRecord {
             units.push({
                 u:u,                    // unitid
                 v:value,                // final value
-                d:new Date().valueOf()  // timestamp
+                d:new Date()            // timestamp
             })
 
         }
