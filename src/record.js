@@ -52,11 +52,12 @@ class RavenRecord {
     _topic(topic) {
 
         try {
-            
+
             // return data extracted from the MQTT topic string
             // example: 
             //      :meshid/:schema
             //      raven-1001/data
+            //console.log(topic)
             topic = topic.split('/')
 
             // the topic must contain at least two parameters to be valid
@@ -67,9 +68,9 @@ class RavenRecord {
 
             this.meshid = topic[0]
             this.topic = topic[1]
-
+            //console.log(topic[1])
         } catch (error) {
-
+            //console.log('entro en error')
             this.valid = false;
 
         }
@@ -81,9 +82,10 @@ class RavenRecord {
     _payload(message) {
 
         try {
-
+            //console.log(message.toString())
             message = JSON.parse(message.toString())
-            
+            console.log('mensaje entrante', message)
+            //console.log(message.id.toString())
             // Get the device id
             this.device = message.id
 
@@ -91,28 +93,38 @@ class RavenRecord {
             // we attach the data to the main device
             if (!this.device) {
                 this.device = this.meshid
-                return this.valid = false;   
+                //console.log('error aqui')
+                return this.valid = false;
+
             }
 
-            delete(message.id)
+            delete (message.id)
 
             //
-            if (this.topic === 'data') { 
-                this.payload = this._payloadData(message) 
+            if (this.topic === 'data') {
+                this.payload = this._payloadData(message)
             }
 
+            if (this.topic === 'event') {
+                console.log('si llamo a payloadwarning', message)
+                this.payload = this._payloadWarning(message)
+            }
+            return
         } catch (error) {
-            return this.valid = false;   
+            console.log('algun error', error)
+            return this.valid = false;
         }
 
-        return 
 
-        if (this.topic.schema === 'warning') {
-            return this._payloadWarning(message)
-        }
+        // //return
+        // if (this.topic.schema === 'event') {
+        //     console.log('return de _payloadWarning ', message)
+        //     return this._payloadWarning(message)
+        // }
 
-        this.valid = false
-        this.error = "not_valid_payload"
+        // this.valid = false
+        // this.error = "not_valid_payload"
+        // return
 
     }
 
@@ -122,18 +134,17 @@ class RavenRecord {
 
         var units = []
 
-        for (let [u,v] of Object.entries(message)) {
-
+        for (let [u, v] of Object.entries(message)) {
+            console.log('objeto', Object.entries(message))
             let value = Number(v)
 
             if (value === NaN) {
                 value = v
             }
-
             units.push({
-                u:u,                    // unitid
-                v:value,                // final value
-                d:new Date()            // timestamp
+                u: u,                    // unitid   //col
+                v: value,                // final value
+                d: new Date()            // timestamp
             })
 
         }
@@ -145,10 +156,17 @@ class RavenRecord {
 
     // · parse data for a log of warning events
     _payloadWarning(message) {
+        var units = []
+        const keyWord = Object.keys(message)
+        //let [u, v] = 
+        units.push({
+            u: keyWord[0],
+            v: message[keyWord[0]],
+            d: new Date()
+        })
 
-        // for this escenario we received the alert code within the payload 
-        this.topic.unitid = message.toString()
-        return new Date()
+        console.log("units", units)
+        return units
 
     }
 
