@@ -57,7 +57,7 @@ class RavenRecord {
             // example: 
             //      :meshid/:schema
             //      raven-1001/data
-            //console.log(topic)
+            console.log('topic', topic)
             topic = topic.split('/')
 
             // the topic must contain at least two parameters to be valid
@@ -84,7 +84,6 @@ class RavenRecord {
         try {
             //console.log(message.toString())
             message = JSON.parse(message.toString())
-            console.log('mensaje entrante', message)
             //console.log(message.id.toString())
             // Get the device id
             this.device = message.id
@@ -106,8 +105,11 @@ class RavenRecord {
             }
 
             if (this.topic === 'event') {
-                console.log('si llamo a payloadwarning', message)
                 this.payload = this._payloadWarning(message)
+            }
+
+            if (this.topic === 'config') {
+                this.payload = this._payloadParams(message)
             }
             return
         } catch (error) {
@@ -168,6 +170,27 @@ class RavenRecord {
         console.log("units", units)
         return units
 
+    }
+
+    // · parse data for a log of params events
+    _payloadParams(message) {
+        var units = []
+        units.push({
+            u: "parameters",
+            ip: message.ip,
+            name: message.name,
+            tmin: message.tmin,
+            tmax: message.tmax,
+            hmin: message.hmin,
+            hmax: message.hmax,
+            clock: message.clock,
+            start: message.start,
+            finish: message.finish,
+            always: message.always,
+            precise: message.precise,
+            d: new Date()
+        })
+        return units
     }
 
 }
