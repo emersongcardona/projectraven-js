@@ -57,7 +57,7 @@ class RavenRecord {
             // example: 
             //      :meshid/:schema
             //      raven-1001/data
-            console.log('topic', topic)
+
             topic = topic.split('/')
 
             // the topic must contain at least two parameters to be valid
@@ -68,9 +68,7 @@ class RavenRecord {
 
             this.meshid = topic[0]
             this.topic = topic[1]
-            //console.log(topic[1])
         } catch (error) {
-            //console.log('entro en error')
             this.valid = false;
 
         }
@@ -82,9 +80,7 @@ class RavenRecord {
     _payload(message) {
 
         try {
-            //console.log(message.toString())
             message = JSON.parse(message.toString())
-            //console.log(message.id.toString())
             // Get the device id
             this.device = message.id
 
@@ -92,7 +88,6 @@ class RavenRecord {
             // we attach the data to the main device
             if (!this.device) {
                 this.device = this.meshid
-                //console.log('error aqui')
                 return this.valid = false;
 
             }
@@ -113,14 +108,12 @@ class RavenRecord {
             }
             return
         } catch (error) {
-            console.log('algun error', error)
             return this.valid = false;
         }
 
 
         // //return
         // if (this.topic.schema === 'event') {
-        //     console.log('return de _payloadWarning ', message)
         //     return this._payloadWarning(message)
         // }
 
@@ -137,7 +130,6 @@ class RavenRecord {
         var units = []
 
         for (let [u, v] of Object.entries(message)) {
-            console.log('objeto', Object.entries(message))
             let value = Number(v)
 
             if (value === NaN) {
@@ -166,8 +158,6 @@ class RavenRecord {
             v: message[keyWord[0]],
             d: new Date()
         })
-
-        console.log("units", units)
         return units
 
     }
