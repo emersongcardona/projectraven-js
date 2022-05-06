@@ -104,7 +104,7 @@ class RavenRecord {
             }
 
             if (this.topic === 'config') {
-                this.payload = this._payloadParams(message)
+                this.payload = this._payloadConfig(message)
             }
             return
         } catch (error) {
@@ -136,7 +136,7 @@ class RavenRecord {
                 value = v
             }
             units.push({
-                u: u,                    // unitid   //col
+                u: u,                    // unitid 
                 v: value,                // final value
                 d: new Date()            // timestamp
             })
@@ -154,31 +154,31 @@ class RavenRecord {
         const keyWord = Object.keys(message)
         //let [u, v] = 
         units.push({
-            u: keyWord[0],
-            v: message[keyWord[0]],
-            d: new Date()
+            u: keyWord[0],               //create a collection with that keyword
+            v: message[keyWord[0]],      //alert/warning/error code
+            d: new Date()                //timestamp
         })
         return units
 
     }
 
     // · parse data for a log of params events
-    _payloadParams(message) {
+    _payloadConfig(message) {
         var units = []
         units.push({
-            u: "parameters",
-            ip: message.ip,
-            name: message.name,
-            tmin: message.tmin,
-            tmax: message.tmax,
-            hmin: message.hmin,
-            hmax: message.hmax,
-            clock: message.clock,
-            start: message.start,
-            finish: message.finish,
-            always: message.always,
-            precise: message.precise,
-            d: new Date()
+            u: "parameters",          //collection 
+            ip: message.ip,           //IP address (read only)(OTA protocol)
+            name: message.name,       //custom client name 
+            t_min: message.t_min,     //min allowed temperature 
+            t_max: message.t_max,     //max allowed temperature      
+            h_min: message.h_min,     //min allowed humidity
+            h_max: message.h_max,     //max allowed humidity 
+            clock: message.clock,     //1 = clock configured / 0 = clock do not configured (only read)
+            start: message.start,     //hour to start scurity scheadule 
+            finish: message.finish,   //hour to finish scurity scheadule
+            always: message.always,   //set up the always on scurity sensors functions
+            precise: message.precise, //number of decimal numbers of the temperature(0-9)
+            d: new Date()             //timestamp
         })
         return units
     }
