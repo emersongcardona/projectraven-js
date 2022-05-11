@@ -52,11 +52,12 @@ class RavenRecord {
     _topic(topic) {
 
         try {
-            
+
             // return data extracted from the MQTT topic string
             // example: 
             //      :meshid/:schema
             //      raven-1001/data
+
             topic = topic.split('/')
 
             // the topic must contain at least two parameters to be valid
@@ -67,9 +68,7 @@ class RavenRecord {
 
             this.meshid = topic[0]
             this.topic = topic[1]
-
         } catch (error) {
-
             this.valid = false;
 
         }
@@ -81,9 +80,7 @@ class RavenRecord {
     _payload(message) {
 
         try {
-
             message = JSON.parse(message.toString())
-            
             // Get the device id
             this.device = message.id
 
@@ -91,28 +88,38 @@ class RavenRecord {
             // we attach the data to the main device
             if (!this.device) {
                 this.device = this.meshid
-                return this.valid = false;   
+                return this.valid = false;
+
             }
 
-            delete(message.id)
+            delete (message.id)
 
             //
-            if (this.topic === 'data') { 
-                this.payload = this._payloadData(message) 
+            if (this.topic === 'data') {
+                this.payload = this._payloadData(message)
             }
 
+            if (this.topic === 'event') {
+                this.payload = this._payloadWarning(message)
+            }
+
+            if (this.topic === 'config') {
+                this.payload = this._payloadConfig(message)
+            }
+            return
         } catch (error) {
-            return this.valid = false;   
+            return this.valid = false;
         }
 
-        return 
 
-        if (this.topic.schema === 'warning') {
-            return this._payloadWarning(message)
-        }
+        // //return
+        // if (this.topic.schema === 'event') {
+        //     return this._payloadWarning(message)
+        // }
 
-        this.valid = false
-        this.error = "not_valid_payload"
+        // this.valid = false
+        // this.error = "not_valid_payload"
+        // return
 
     }
 
@@ -122,18 +129,16 @@ class RavenRecord {
 
         var units = []
 
-        for (let [u,v] of Object.entries(message)) {
-
+        for (let [u, v] of Object.entries(message)) {
             let value = Number(v)
 
             if (value === NaN) {
                 value = v
             }
-
             units.push({
-                u:u,                    // unitid
-                v:value,                // final value
-                d:new Date()            // timestamp
+                u: u,                    // unitid 
+                v: value,                // final value
+                d: new Date()            // timestamp
             })
 
         }
@@ -145,11 +150,37 @@ class RavenRecord {
 
     // · parse data for a log of warning events
     _payloadWarning(message) {
+        var units = []
+        const keyWord = Object.keys(message)
+        //let [u, v] = 
+        units.push({
+            u: keyWord[0],               //create a collection with that keyword
+            v: message[keyWord[0]],      //alert/warning/error code
+            d: new Date()                //timestamp
+        })
+        return units
 
-        // for this escenario we received the alert code within the payload 
-        this.topic.unitid = message.toString()
-        return new Date()
+    }
 
+    // · parse data for a log of params events
+    _payloadConfig(message) {
+        var units = []
+        units.push({
+            u: "parameters",          //collection 
+            ip: message.ip,           //IP address (read only)(OTA protocol)
+            name: message.name,       //custom client name 
+            t_min: message.t_min,     //min allowed temperature 
+            t_max: message.t_max,     //max allowed temperature      
+            h_min: message.h_min,     //min allowed humidity
+            h_max: message.h_max,     //max allowed humidity 
+            clock: message.clock,     //1 = clock configured / 0 = clock do not configured (only read)
+            start: message.start,     //hour to start scurity scheadule 
+            finish: message.finish,   //hour to finish scurity scheadule
+            always: message.always,   //set up the always on scurity sensors functions
+            precise: message.precise, //number of decimal numbers of the temperature(0-9)
+            d: new Date()             //timestamp
+        })
+        return units
     }
 
 }
