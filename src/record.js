@@ -164,7 +164,6 @@ class RavenRecord {
     _payloadConfig(message) {
         var units = []
         units.push({
-            u: "parameters",          //collection 
             ip: message.ip,           //IP address (read only)(OTA protocol)
             name: message.name,       //custom client name 
             t_min: message.t_min,     //min allowed temperature 
