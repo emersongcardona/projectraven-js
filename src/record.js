@@ -30,7 +30,7 @@ Building a better future, one line of code at a time.
 // · 
 */
 
-
+const alreadyJSONType = require("../helpers/validate_helper")
 // · 
 class RavenRecord {
 
@@ -80,13 +80,15 @@ class RavenRecord {
     _payload(message) {
 
         try {
-            message = JSON.parse(message.toString())
+            if (alreadyJSONType(message)) {
+                message = JSON.parse(message.toString())
+            }
             // Get the device id
             this.device = message.id
 
             // if payload does not include deviceid
             // we attach the data to the main device
-            if (!this.device) {
+            if (!(this.device)) {
                 this.device = this.meshid
                 return this.valid = false;
 
@@ -105,6 +107,7 @@ class RavenRecord {
 
             if (this.topic === 'config') {
                 this.payload = this._payloadConfig(message)
+
             }
             return
         } catch (error) {
@@ -184,6 +187,7 @@ class RavenRecord {
     }
 
 }
+
 
 
 
