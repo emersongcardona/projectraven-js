@@ -1,5 +1,5 @@
 
-module.exports = function alreadyJSONType(str) {
+module.exports = function tryParseToJSON(str) {
     try {
         JSON.parse(str);
     } catch (e) {

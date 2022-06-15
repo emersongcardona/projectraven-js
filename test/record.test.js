@@ -32,7 +32,7 @@ Building a better future, one line of code at a time.
 
 // · 
 const { expect } = require("chai")
-const standardMqttFormatMessage = require("../tools/standarMqttMessages")
+const sharedBehavior = require("./helpers/sharedBehaviors")
 // · 
 let { record: RavenRecord } = require("../index")
 const { faker } = require('@faker-js/faker');
@@ -62,7 +62,7 @@ describe("RavenRecord data topic", () => {
         this.ravenRecord = new RavenRecord("raven-1001/data", dataMessage)
     })
 
-    standardMqttFormatMessage()
+    sharedBehavior.standardMqttFormatMessage()
 
     it("is expected to be an instance of RavenRecord", function () {
         expect(this.ravenRecord).to.be.an.instanceof(RavenRecord);
@@ -97,7 +97,7 @@ describe("RavenRecord config topic", () => {
         this.ravenRecord = new RavenRecord("raven-1001/config", configMessage)
     })
 
-    standardMqttFormatMessage()
+    sharedBehavior.standardMqttFormatMessage()
 
     it("is expected to be an instance of RavenRecord", function () {
         expect(this.ravenRecord).to.be.an.instanceof(RavenRecord);
@@ -122,7 +122,7 @@ describe("RavenRecord event topic", () => {
         this.ravenRecord = new RavenRecord("raven-1001/event", eventMessage)
     })
 
-    standardMqttFormatMessage()
+    sharedBehavior.standardMqttFormatMessage()
 
     it("is expected to be an instance of RavenRecord", function () {
         expect(this.ravenRecord).to.be.an.instanceof(RavenRecord);

@@ -30,7 +30,7 @@ Building a better future, one line of code at a time.
 // · 
 */
 
-const alreadyJSONType = require("../helpers/validate_helper")
+const tryParseToJSON = require("../helpers/validate_helper")
 // · 
 class RavenRecord {
 
@@ -80,21 +80,20 @@ class RavenRecord {
     _payload(message) {
 
         try {
-            if (alreadyJSONType(message)) {
+            if (tryParseToJSON(message)) {
                 message = JSON.parse(message.toString())
             }
             // Get the device id
-            this.device = message.id
+            this.device = message.device_id
 
             // if payload does not include deviceid
             // we attach the data to the main device
-            if (!(this.device)) {
+            if (!this.device) {
                 this.device = this.meshid
                 return this.valid = false;
-
             }
 
-            delete (message.id)
+            delete (message.device_id)
 
             //
             if (this.topic === 'data') {
@@ -169,7 +168,6 @@ class RavenRecord {
     _payloadConfig(message) {
         var units = []
         units.push({
-            u: "parameters",          //collection 
             ip: message.ip,           //IP address (read only)(OTA protocol)
             name: message.name,       //custom client name 
             t_min: message.t_min,     //min allowed temperature 

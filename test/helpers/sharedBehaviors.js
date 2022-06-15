@@ -19,7 +19,7 @@ For more information read the license file including with this software.
 var expect = require("chai").expect
 
 
-module.exports = function standardMqttFormatMessage() {
+exports.standardMqttFormatMessage = function () {
 
     it("is expected that the instance has all the keys", function () {
         expect(this.ravenRecord).to.have.keys(["valid", "topic", "payload", "error", "meshid", "device"]);
