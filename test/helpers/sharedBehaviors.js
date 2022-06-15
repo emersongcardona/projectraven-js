@@ -37,4 +37,9 @@ exports.standardMqttFormatMessage = function () {
         expect(this.ravenRecord.valid).to.equal(true)
     })
 
+    it("is expected that there is not any error", function () {
+        expect(this.ravenRecord.error).to.be.a("String")
+        expect(this.ravenRecord.error).to.equal("")
+    })
+
 }

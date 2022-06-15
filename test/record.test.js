@@ -82,13 +82,6 @@ describe("RavenRecord data topic", () => {
 
     })
 
-    it("is expected that there is not any error", function () {
-        expect(this.ravenRecord.error).to.be.a("String")
-        expect(this.ravenRecord.error).to.equal("")
-    })
-
-
-
 })
 
 describe("RavenRecord config topic", () => {
