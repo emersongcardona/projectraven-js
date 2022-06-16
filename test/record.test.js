@@ -32,49 +32,104 @@ Building a better future, one line of code at a time.
 
 // · 
 const { expect } = require("chai")
-
-
+const sharedBehavior = require("./helpers/sharedBehaviors")
 // · 
 let { record: RavenRecord } = require("../index")
+const { faker } = require('@faker-js/faker');
 
+let temperature = faker.random.numeric(2)
+let humidity = faker.random.numeric(2)
+let dataMessage = { "device_id": "raven-1001", "T1": temperature, "H1": humidity }
+let eventMessage = { "device_id": "raven-1001", "E": `S${faker.datatype.number({ min: 0, max: 10 })}` }
+let configMessage = {
+    "device_id": "raven-1001",
+    "ip": faker.internet.ip(),
+    "name": faker.name.jobArea(),
+    "t_min": faker.random.numeric(2),
+    "t_max": faker.random.numeric(2),
+    "h_min": faker.random.numeric(2),
+    "h_max": faker.random.numeric(2),
+    "start": faker.datatype.number({ min: 0, max: 23 }),
+    "finish": faker.datatype.number({ min: 0, max: 23 }),
+    "precise": faker.datatype.number({ min: 0, max: 7 }),
+    "always": faker.datatype.number({ min: 0, max: 1 }),
+    "clock": faker.datatype.number({ min: 0, max: 1 })
+}
 
-describe("RavenRecord", () => {
+describe("RavenRecord data topic", () => {
 
-    before(function(){
-        this.ravenRecord = new RavenRecord("raven-1001/data/T1", 1)
+    before(function () {
+        this.ravenRecord = new RavenRecord("raven-1001/data", dataMessage)
     })
 
-    it("is expected to be an instance of RavenRecord", function(){
+    sharedBehavior.standardMqttFormatMessage()
+
+    it("is expected to be an instance of RavenRecord", function () {
         expect(this.ravenRecord).to.be.an.instanceof(RavenRecord);
-    }) 
-
-    it("is expected that the instance has all the keys", function(){
-        expect(this.ravenRecord).to.have.keys(["valid", "topic", "payload", "error"]);
     })
 
-    it("is expected that the raven record is valid", function(){
-        expect(this.ravenRecord.valid).to.equal(true)
+    it("is expected to be on topic data", function () {
+        expect(this.ravenRecord.topic).to.equal("data");
     })
 
-    it("is expected that the raven record has the full topic structure", function(){
-        expect(this.ravenRecord.topic).to.have.keys(["device", "schema", "unitid"])
+    it("is expected that the raven record has a valid payload", function () {
+        this.ravenRecord.payload.forEach(element => {
+            expect(element).to.have.keys(["u", "v", "d"])
+            expect(element.u).to.be.a("String")
+            expect(element.v).to.be.a("number")
+            expect(element.d).to.be.a("Date")
+        });
 
-        expect(this.ravenRecord.topic.device).to.be.a("String")
-        expect(this.ravenRecord.topic.schema).to.be.a("String")
-        expect(this.ravenRecord.topic.unitid).to.be.a("String")
     })
 
-    it("is expected that the raven record has a valid payload", function(){
-        expect(this.ravenRecord.payload).to.have.keys(["v", "d"])
+})
 
-        expect(this.ravenRecord.payload.v).to.be.a("Number")
-        expect(this.ravenRecord.payload.v).to.be.equal(1)
-        expect(this.ravenRecord.payload.d).to.be.a("Date")
+describe("RavenRecord config topic", () => {
+
+    before(function () {
+        this.ravenRecord = new RavenRecord("raven-1001/config", configMessage)
     })
 
-    it("is expected that there is not any error", function(){
-        expect(this.ravenRecord.error).to.be.a("String")
-        expect(this.ravenRecord.error).to.equal("")
+    sharedBehavior.standardMqttFormatMessage()
+
+    it("is expected to be an instance of RavenRecord", function () {
+        expect(this.ravenRecord).to.be.an.instanceof(RavenRecord);
+    })
+
+    it("is expected to be on topic config", function () {
+        expect(this.ravenRecord.topic).to.equal("config");
+    })
+
+    it("is expected that the instance has all the keys", function () {
+        expect(this.ravenRecord.payload[0]).to.have.keys(["ip", "name", "t_max", "t_min", "h_max", "h_min", "start", "finish", "precise", "clock", "d", "always"]);
+    })
+
+})
+
+
+
+
+describe("RavenRecord event topic", () => {
+
+    before(function () {
+        this.ravenRecord = new RavenRecord("raven-1001/event", eventMessage)
+    })
+
+    sharedBehavior.standardMqttFormatMessage()
+
+    it("is expected to be an instance of RavenRecord", function () {
+        expect(this.ravenRecord).to.be.an.instanceof(RavenRecord);
+    })
+
+    it("is expected to be on topic event", function () {
+        expect(this.ravenRecord.topic).to.equal("event");
+    })
+
+    it("is expected that the raven record has a valid payload", function () {
+        expect(this.ravenRecord.payload[0]).to.have.keys(["u", "v", "d"])
+        expect(this.ravenRecord.payload[0].u).to.be.a("String")
+        expect(this.ravenRecord.payload[0].v).to.be.a("string")
+        expect(this.ravenRecord.payload[0].d).to.be.a("Date")
     })
 
 })
