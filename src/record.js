@@ -128,7 +128,6 @@ class RavenRecord {
 
     // · parse payload as measurable data
     _payloadData(message) {
-
         var units = []
 
         for (let [u, v] of Object.entries(message)) {
@@ -154,7 +153,6 @@ class RavenRecord {
     _payloadWarning(message) {
         var units = []
         const keyWord = Object.keys(message)
-        //let [u, v] = 
         units.push({
             u: keyWord[0],               //create a collection with that keyword
             v: message[keyWord[0]],      //alert/warning/error code
