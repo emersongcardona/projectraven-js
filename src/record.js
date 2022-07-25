@@ -59,7 +59,6 @@ class RavenRecord {
             //      raven-1001/data
 
             topic = topic.split('/')
-
             // the topic must contain at least two parameters to be valid
             if (topic.length < 2) { return this.valid = false; }
 
@@ -78,7 +77,6 @@ class RavenRecord {
 
     // · 
     _payload(message) {
-
         try {
             if (tryParseToJSON(message)) {
                 message = JSON.parse(message.toString())
@@ -94,7 +92,6 @@ class RavenRecord {
             }
 
             delete (message.device_id)
-
             //
             if (this.topic === 'data') {
                 this.payload = this._payloadData(message)
@@ -152,14 +149,26 @@ class RavenRecord {
 
     // · parse data for a log of warning events
     _payloadWarning(message) {
+
         var units = []
         const keyWord = Object.keys(message)
-        //let [u, v] = 
+
+        if (message.E === "pair") {
+            units.push({
+                u: keyWord[0],               //create a collection with that keyword
+                v: message[keyWord[0]],
+                t: message.T,      //alert/warning/error code
+                d: new Date()                //timestamp
+            })
+            return units
+        }
+
         units.push({
             u: keyWord[0],               //create a collection with that keyword
             v: message[keyWord[0]],      //alert/warning/error code
             d: new Date()                //timestamp
         })
+
         return units
 
     }
@@ -179,6 +188,7 @@ class RavenRecord {
             finish: message.finish,   //hour to finish scurity scheadule
             always: message.always,   //set up the always on scurity sensors functions
             precise: message.precise, //number of decimal numbers of the temperature(0-9)
+            account_id: message.account_id,
             d: new Date()             //timestamp
         })
         return units
