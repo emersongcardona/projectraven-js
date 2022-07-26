@@ -158,16 +158,6 @@ class RavenRecord {
         var units = []
         const keyWord = Object.keys(message)
 
-        if (message.E === "pair") {
-            units.push({
-                u: keyWord[0],               //create a collection with that keyword
-                v: message[keyWord[0]],
-                t: message.T,      //alert/warning/error code
-                d: new Date()                //timestamp
-            })
-            return units
-        }
-
         units.push({
             u: keyWord[0],               //create a collection with that keyword
             v: message[keyWord[0]],      //alert/warning/error code
