@@ -105,6 +105,11 @@ class RavenRecord {
                 this.payload = this._payloadConfig(message)
 
             }
+
+            if (this.topic === 'token') {
+                this.payload = this._payloadToken(message)
+
+            }
             return
         } catch (error) {
             return this.valid = false;
@@ -192,6 +197,16 @@ class RavenRecord {
             d: new Date()             //timestamp
         })
         return units
+    }
+
+    _payloadToken(message) {
+        var units = []
+        units.push({
+            token: message.token,                //token value
+            d: new Date()                        //timestamp
+        })
+        return units
+
     }
 
 }
