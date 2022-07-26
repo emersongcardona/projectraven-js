@@ -41,6 +41,7 @@ let temperature = faker.random.numeric(2)
 let humidity = faker.random.numeric(2)
 let dataMessage = { "device_id": "raven-1001", "T1": temperature, "H1": humidity }
 let eventMessage = { "device_id": "raven-1001", "E": `S${faker.datatype.number({ min: 0, max: 10 })}` }
+let tokenMessage = { "device_id": "raven-1001", "token": `S${faker.random.alphaNumeric(5)}` }
 let configMessage = {
     "device_id": "raven-1001",
     "ip": faker.internet.ip(),
@@ -53,7 +54,8 @@ let configMessage = {
     "finish": faker.datatype.number({ min: 0, max: 23 }),
     "precise": faker.datatype.number({ min: 0, max: 7 }),
     "always": faker.datatype.number({ min: 0, max: 1 }),
-    "clock": faker.datatype.number({ min: 0, max: 1 })
+    "clock": faker.datatype.number({ min: 0, max: 1 }),
+    "account_id": faker.random.alphaNumeric(27)
 }
 
 describe("RavenRecord data topic", () => {
@@ -101,7 +103,7 @@ describe("RavenRecord config topic", () => {
     })
 
     it("is expected that the instance has all the keys", function () {
-        expect(this.ravenRecord.payload[0]).to.have.keys(["ip", "name", "t_max", "t_min", "h_max", "h_min", "start", "finish", "precise", "clock", "d", "always"]);
+        expect(this.ravenRecord.payload[0]).to.have.keys(["ip", "name", "t_max", "t_min", "h_max", "h_min", "start", "finish", "precise", "clock", "d", "always", "account_id"]);
     })
 
 })
@@ -129,6 +131,31 @@ describe("RavenRecord event topic", () => {
         expect(this.ravenRecord.payload[0]).to.have.keys(["u", "v", "d"])
         expect(this.ravenRecord.payload[0].u).to.be.a("String")
         expect(this.ravenRecord.payload[0].v).to.be.a("string")
+        expect(this.ravenRecord.payload[0].d).to.be.a("Date")
+    })
+
+})
+
+
+describe("RavenRecord token topic", () => {
+
+    before(function () {
+        this.ravenRecord = new RavenRecord("raven-1001/token", tokenMessage)
+    })
+
+    sharedBehavior.standardMqttFormatMessage()
+
+    it("is expected to be an instance of RavenRecord", function () {
+        expect(this.ravenRecord).to.be.an.instanceof(RavenRecord);
+    })
+
+    it("is expected to be on topic event", function () {
+        expect(this.ravenRecord.topic).to.equal("token");
+    })
+
+    it("is expected that the raven record has a valid payload", function () {
+        expect(this.ravenRecord.payload[0]).to.have.keys(["token", "d"])
+        expect(this.ravenRecord.payload[0].token).to.be.a("String")
         expect(this.ravenRecord.payload[0].d).to.be.a("Date")
     })
 
