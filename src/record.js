@@ -110,6 +110,11 @@ class RavenRecord {
                 this.payload = this._payloadToken(message)
 
             }
+
+            if (this.topic === 'server_check') {
+                this.payload = this._payloadServerCheck(message)
+
+            }
             return
         } catch (error) {
             return this.valid = false;
@@ -192,6 +197,16 @@ class RavenRecord {
         var units = []
         units.push({
             token: message.token,                //token value
+            d: new Date()                        //timestamp
+        })
+        return units
+
+    }
+
+    _payloadServerCheck(message) {
+        var units = []
+        units.push({
+            ip: message.ip,                      //ip direccion
             d: new Date()                        //timestamp
         })
         return units
